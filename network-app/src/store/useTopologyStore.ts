@@ -13,6 +13,8 @@ import {
 import { NodeData, SiteGroupData, NodeKind, TopologySnapshot } from '../types';
 import { exampleNodes, exampleEdges } from '../data/exampleTopology';
 import { saveToStorage, loadFromStorage } from '../utils/persistence';
+
+export { exampleNodes, exampleEdges };
 import { analyzeTopology, type AnalysisResult } from '../utils/networkAnalysis';
 
 type AddNodeKind = NodeKind | 'siteGroup';
@@ -56,8 +58,8 @@ const NODE_LABELS: Record<AddNodeKind, string> = {
 };
 
 export const useTopologyStore = create<TopologyState>()((set, get) => ({
-  nodes: exampleNodes as Node[],
-  edges: exampleEdges,
+  nodes: [],
+  edges: [],
   selectedNodeId: null,
   analysisResult: null,
   showOptimizer: false,

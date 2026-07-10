@@ -10,6 +10,7 @@ import {
 import { useTopologyStore } from '../store/useTopologyStore';
 import { nodeTypes } from './nodes';
 import { edgeTypes } from './edges';
+import { EmptyState } from './EmptyState';
 
 const NODE_COLORS: Record<string, string> = {
   isp: '#0ea5e9',
@@ -42,7 +43,8 @@ export function Canvas() {
   }, [setSelectedNode]);
 
   return (
-    <div className="flex-1 h-full">
+    <div className="flex-1 h-full relative">
+      <EmptyState />
       <ReactFlow
         nodes={nodes}
         edges={edges}
