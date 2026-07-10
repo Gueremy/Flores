@@ -1,16 +1,18 @@
 import { Handle, Position, type NodeProps, type Node } from '@xyflow/react';
 import { NodeData } from '../../types';
 import { RouterIcon } from '../icons';
+import { SeverityBadge } from './SeverityBadge';
 
 type RouterNodeType = Node<NodeData>;
 
-export function RouterNode({ data, selected }: NodeProps<RouterNodeType>) {
+export function RouterNode({ id, data, selected }: NodeProps<RouterNodeType>) {
   return (
     <div className={`
-      flex flex-col items-center gap-1 px-3 py-2 rounded-xl border-2 bg-white shadow-md
+      relative flex flex-col items-center gap-1 px-3 py-2 rounded-xl border-2 bg-white shadow-md
       min-w-[90px] cursor-pointer select-none transition-all
       ${selected ? 'border-indigo-500 shadow-indigo-300 shadow-lg' : 'border-indigo-300'}
     `}>
+      <SeverityBadge nodeId={id} />
       <Handle type="target" position={Position.Top} className="!w-3 !h-3 !bg-indigo-400" />
       <Handle type="target" position={Position.Left} id="left-in" className="!w-3 !h-3 !bg-indigo-400" />
       <div className="text-indigo-500"><RouterIcon /></div>

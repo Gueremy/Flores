@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useTopologyStore } from '../store/useTopologyStore';
 import { downloadJSON, parseJSONFile, exportPNG } from '../utils/exportImport';
 import { NodeKind, TopologySnapshot } from '../types';
+import { type Severity } from '../utils/networkAnalysis';
 
 type AddNodeKind = NodeKind | 'siteGroup';
 
@@ -20,9 +21,22 @@ const NODE_BUTTONS: NodeButton[] = [
   { kind: 'siteGroup', label: '+ Sitio',    color: 'bg-slate-700 hover:bg-slate-600 border border-dashed border-slate-400' },
 ];
 
+const SCORE_COLOR: Record<string, string> = {
+  critical: 'text-red-400',
+  warning:  'text-amber-400',
+  ok:       'text-emerald-400',
+};
+
+function scoreLevel(score: number): Severity {
+  if (score >= 80) return 'ok';
+  if (score >= 50) return 'warning';
+  return 'critical';
+}
+
 export function Toolbar() {
   const store = useTopologyStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const score = store.analysisResult?.score;
 
   const handleAddNode = (kind: AddNodeKind) => {
     store.addNode(kind, { x: 150 + Math.random() * 300, y: 150 + Math.random() * 150 });
@@ -72,6 +86,21 @@ export function Toolbar() {
       <div className="flex-1" />
 
       <div className="flex items-center gap-1.5 shrink-0">
+        {/* Optimizer button */}
+        <button
+          onClick={store.runAnalysis}
+          className="px-2.5 py-1 rounded text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors flex items-center gap-1.5 shadow-lg shadow-blue-900/40"
+        >
+          🧠 Analizar Red
+          {score !== undefined && (
+            <span className={`font-bold ${SCORE_COLOR[scoreLevel(score)]}`}>
+              {score}%
+            </span>
+          )}
+        </button>
+
+        <div className="w-px h-5 bg-slate-700 mx-0.5" />
+
         <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
           Archivo
         </span>

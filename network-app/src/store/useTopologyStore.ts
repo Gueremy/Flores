@@ -13,6 +13,7 @@ import {
 import { NodeData, SiteGroupData, NodeKind, TopologySnapshot } from '../types';
 import { exampleNodes, exampleEdges } from '../data/exampleTopology';
 import { saveToStorage, loadFromStorage } from '../utils/persistence';
+import { analyzeTopology, type AnalysisResult } from '../utils/networkAnalysis';
 
 type AddNodeKind = NodeKind | 'siteGroup';
 
@@ -20,6 +21,8 @@ interface TopologyState {
   nodes: Node[];
   edges: Edge[];
   selectedNodeId: string | null;
+  analysisResult: AnalysisResult | null;
+  showOptimizer: boolean;
 
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
@@ -29,6 +32,9 @@ interface TopologyState {
   updateNodeData: (id: string, patch: Partial<NodeData> | Partial<SiteGroupData>) => void;
   deleteNode: (id: string) => void;
   setSelectedNode: (id: string | null) => void;
+
+  runAnalysis: () => void;
+  toggleOptimizer: () => void;
 
   saveToLocalStorage: () => void;
   loadFromLocalStorage: () => boolean;
@@ -53,6 +59,8 @@ export const useTopologyStore = create<TopologyState>()((set, get) => ({
   nodes: exampleNodes as Node[],
   edges: exampleEdges,
   selectedNodeId: null,
+  analysisResult: null,
+  showOptimizer: false,
 
   onNodesChange: (changes) =>
     set({ nodes: applyNodeChanges(changes, get().nodes) }),
@@ -109,6 +117,15 @@ export const useTopologyStore = create<TopologyState>()((set, get) => ({
     }),
 
   setSelectedNode: (id) => set({ selectedNodeId: id }),
+
+  runAnalysis: () => {
+    const { nodes, edges } = get();
+    const result = analyzeTopology(nodes, edges);
+    set({ analysisResult: result, showOptimizer: true });
+  },
+
+  toggleOptimizer: () =>
+    set((s) => ({ showOptimizer: !s.showOptimizer })),
 
   saveToLocalStorage: () => {
     const { nodes, edges } = get();

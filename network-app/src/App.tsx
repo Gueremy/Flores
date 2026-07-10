@@ -2,6 +2,7 @@ import { ReactFlowProvider } from '@xyflow/react';
 import { Canvas } from './components/Canvas';
 import { Toolbar } from './components/Toolbar';
 import { SidePanel } from './components/SidePanel';
+import { OptimizerPanel } from './components/OptimizerPanel';
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
         <div className="flex flex-1 overflow-hidden">
           <Canvas />
           <SidePanel />
+          <OptimizerPanel />
         </div>
       </ReactFlowProvider>
     </div>
