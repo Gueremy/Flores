@@ -10,7 +10,7 @@ const STEPS = [
 ];
 
 export function EmptyState() {
-  const { nodes, importTopology } = useTopologyStore();
+  const { nodes, importTopology, setShowScanModal } = useTopologyStore();
 
   if (nodes.length > 0) return null;
 
@@ -29,8 +29,22 @@ export function EmptyState() {
           <div className="text-4xl mb-2">🌐</div>
           <h2 className="text-lg font-bold text-white">Mapeá tu red</h2>
           <p className="text-sm text-slate-400 mt-1">
-            Canvas vacío — empezá agregando tus dispositivos uno por uno
+            Canvas vacío — escaneá tu red automáticamente o agregá dispositivos a mano
           </p>
+        </div>
+
+        {/* Auto-scan CTA */}
+        <button
+          onClick={() => setShowScanModal(true)}
+          className="w-full px-4 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-emerald-900/40"
+        >
+          📡 Escanear mi red automáticamente
+        </button>
+
+        <div className="flex items-center gap-2">
+          <div className="flex-1 h-px bg-slate-700" />
+          <span className="text-[10px] text-slate-500 uppercase tracking-wider">o a mano</span>
+          <div className="flex-1 h-px bg-slate-700" />
         </div>
 
         <div className="flex flex-col gap-3">

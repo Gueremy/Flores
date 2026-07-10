@@ -3,6 +3,7 @@ import { Canvas } from './components/Canvas';
 import { Toolbar } from './components/Toolbar';
 import { SidePanel } from './components/SidePanel';
 import { OptimizerPanel } from './components/OptimizerPanel';
+import { ScanModal } from './components/ScanModal';
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
           <OptimizerPanel />
         </div>
       </ReactFlowProvider>
+      <ScanModal />
     </div>
   );
 }

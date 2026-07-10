@@ -16,6 +16,7 @@ import { saveToStorage, loadFromStorage } from '../utils/persistence';
 
 export { exampleNodes, exampleEdges };
 import { analyzeTopology, type AnalysisResult } from '../utils/networkAnalysis';
+import { normalizeSnapshot, mergeSnapshots } from '../utils/scanImport';
 
 type AddNodeKind = NodeKind | 'siteGroup';
 
@@ -25,6 +26,7 @@ interface TopologyState {
   selectedNodeId: string | null;
   analysisResult: AnalysisResult | null;
   showOptimizer: boolean;
+  showScanModal: boolean;
 
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
@@ -37,6 +39,8 @@ interface TopologyState {
 
   runAnalysis: () => void;
   toggleOptimizer: () => void;
+  setShowScanModal: (show: boolean) => void;
+  mergeTopology: (snap: TopologySnapshot) => { added: number; updated: number };
 
   saveToLocalStorage: () => void;
   loadFromLocalStorage: () => boolean;
@@ -63,6 +67,7 @@ export const useTopologyStore = create<TopologyState>()((set, get) => ({
   selectedNodeId: null,
   analysisResult: null,
   showOptimizer: false,
+  showScanModal: false,
 
   onNodesChange: (changes) =>
     set({ nodes: applyNodeChanges(changes, get().nodes) }),
@@ -129,6 +134,15 @@ export const useTopologyStore = create<TopologyState>()((set, get) => ({
   toggleOptimizer: () =>
     set((s) => ({ showOptimizer: !s.showOptimizer })),
 
+  setShowScanModal: (show) => set({ showScanModal: show }),
+
+  mergeTopology: (snap) => {
+    const { nodes, edges } = get();
+    const result = mergeSnapshots(nodes, edges, snap);
+    set({ nodes: result.nodes, edges: result.edges, selectedNodeId: null });
+    return { added: result.added, updated: result.updated };
+  },
+
   saveToLocalStorage: () => {
     const { nodes, edges } = get();
     saveToStorage({ version: '1', nodes, edges });
@@ -143,8 +157,10 @@ export const useTopologyStore = create<TopologyState>()((set, get) => ({
     return false;
   },
 
-  importTopology: (snap) =>
-    set({ nodes: snap.nodes as Node[], edges: snap.edges, selectedNodeId: null }),
+  importTopology: (snap) => {
+    const normalized = normalizeSnapshot(snap);
+    set({ nodes: normalized.nodes as Node[], edges: normalized.edges, selectedNodeId: null });
+  },
 
   exportTopology: () => {
     const { nodes, edges } = get();

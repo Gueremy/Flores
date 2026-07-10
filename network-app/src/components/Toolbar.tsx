@@ -60,7 +60,19 @@ export function Toolbar() {
     if (!file) return;
     try {
       const snap = await parseJSONFile(file);
-      store.importTopology(snap as TopologySnapshot);
+      if (store.nodes.length > 0) {
+        const combine = window.confirm(
+          '¿Combinar con el mapa actual?\n\nAceptar = combinar sin duplicar\nCancelar = reemplazar todo el mapa'
+        );
+        if (combine) {
+          const { added, updated } = store.mergeTopology(snap as TopologySnapshot);
+          alert(`Combinado: ${added} nuevos, ${updated} actualizados.`);
+        } else {
+          store.importTopology(snap as TopologySnapshot);
+        }
+      } else {
+        store.importTopology(snap as TopologySnapshot);
+      }
     } catch {
       alert('Archivo inválido. Exportá un JSON de topología válido primero.');
     }
@@ -86,6 +98,14 @@ export function Toolbar() {
       <div className="flex-1" />
 
       <div className="flex items-center gap-1.5 shrink-0">
+        {/* Scan button */}
+        <button
+          onClick={() => store.setShowScanModal(true)}
+          className="px-2.5 py-1 rounded text-xs font-semibold bg-emerald-700 hover:bg-emerald-600 text-white transition-colors shadow-lg shadow-emerald-900/40"
+        >
+          📡 Escanear
+        </button>
+
         {/* Optimizer button */}
         <button
           onClick={store.runAnalysis}
