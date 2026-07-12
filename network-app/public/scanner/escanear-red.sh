@@ -105,9 +105,9 @@ if command -v traceroute >/dev/null 2>&1; then
   while IFS= read -r line; do
     hop_ip=$(echo "$line" | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1)
     [ -z "$hop_ip" ] && continue
-    if is_private_ip "$hop_ip"; then
-      case " $HOPS " in *" $hop_ip "*) ;; *) HOPS="$HOPS $hop_ip" ;; esac
-    fi
+    if ! is_private_ip "$hop_ip"; then break; fi  # Salimos del rango privado: ya es internet publica
+    case " $HOPS " in *" $hop_ip "*) ;; *) HOPS="$HOPS $hop_ip" ;; esac
+    if is_starlink_ip "$hop_ip"; then break; fi  # A partir de aca es el backbone interno de Starlink, no tu red
   done <<EOF
 $TR_OUT
 EOF

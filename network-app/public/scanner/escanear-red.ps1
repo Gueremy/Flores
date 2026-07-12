@@ -54,7 +54,9 @@ $tracert = tracert -d -h 8 -w 800 8.8.8.8 2>$null
 foreach ($line in $tracert) {
     if ($line -match '^\s*\d+\s+.*?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s*$') {
         $hopIP = $Matches[1]
-        if (Test-PrivateIP $hopIP) { $hops += $hopIP }
+        if (-not (Test-PrivateIP $hopIP)) { break }  # Salimos del rango privado: ya es internet publica
+        $hops += $hopIP
+        if (Test-StarlinkIP $hopIP) { break }  # A partir de aca es el backbone interno de Starlink, no tu red
     }
 }
 $hops = $hops | Select-Object -Unique

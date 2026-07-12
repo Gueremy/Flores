@@ -138,19 +138,38 @@ export function ScanModal() {
               >
                 🐧 Linux / Mac (.sh)
               </a>
+              <a
+                href={`${BASE}scanner/escanear-red-android.sh`}
+                download
+                className="px-3 py-1.5 bg-green-700 hover:bg-green-600 text-white rounded-lg text-xs font-medium transition-colors"
+              >
+                🤖 Android (Termux)
+              </a>
             </div>
             <p className="text-[10px] text-slate-500">
               Windows: descargá el .bat y el .ps1 en la misma carpeta, después doble click al .bat.
+              Android: requiere la app Termux (gratis, F-Droid) — mirá las instrucciones dentro del script.
             </p>
           </div>
 
-          {/* Multi-house note */}
+          {/* Multi-house / multi-wifi note */}
           <div className="bg-emerald-950/40 border border-emerald-800 rounded-xl p-3">
             <p className="text-[11px] text-emerald-300 leading-relaxed">
-              <strong>💡 Para mapear TODA la red (varias casas):</strong> cada casa con su
-              propio router es una red separada — ejecutá el mismo escáner en una PC de
-              cada casa e importá todos los archivos acá. La app los combina en un solo
-              mapa sin duplicar (reconoce los routers compartidos por su IP).
+              <strong>💡 Para mapear TODA la red (varios routers/WiFis):</strong> cada
+              router con su propia red (arrendatarios, cabaña, etc.) es una red separada e
+              invisible desde las demás. Conectate a cada WiFi por turno (con la clave de
+              esa red) y corré el escáner ahí también — la app combina todos los
+              resultados en un solo mapa sin duplicar.
+            </p>
+          </div>
+
+          <div className="bg-amber-950/40 border border-amber-800 rounded-xl p-3">
+            <p className="text-[11px] text-amber-300 leading-relaxed">
+              <strong>📱 Con Android:</strong> por restricciones de seguridad del sistema,
+              el escáner desde el teléfono no puede leer direcciones MAC ni el fabricante
+              de cada equipo — solo la lista de IPs conectadas. Vas a ver "Dispositivo
+              192.168.x.x" genéricos: hacé click en cada uno en el mapa y ponele el nombre
+              real (router, antena, TV, etc.) según lo que sepas de tu instalación.
             </p>
           </div>
 
